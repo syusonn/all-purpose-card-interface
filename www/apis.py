@@ -7,7 +7,28 @@ __author__ = 'syuson'
 JSON API definition
 '''
 
-import json,logging,inspect,functools
+import json,logging,inspect,functools,json
+import datetime
+
+# 自定义响应结果类
+class operateResult(object):
+	"""docstring for operate_result"""
+	__SUCCESS__ = 10000
+	__FAILED__ = 99999
+
+	# 自定义响应结果方法
+	def get_result(type=__FAILED__,msg=None,data=None):
+		return dict(type=type,msg=msg,data = json.dumps(data,cls=CJsonEncoder))
+
+# 自定义时间格式化类
+class CJsonEncoder(json.JSONEncoder):  
+    def default(self, obj):  
+        if isinstance(obj, datetime.datetime):  
+            return obj.strftime('%Y-%m-%d %H:%M:%S')  
+        elif isinstance(obj, datetime.date):  
+            return obj.strftime("%Y-%m-%d")  
+        else:  
+            return json.JSONEncoder.default(self, obj)  
 
 class APIError(Exception):
 	"""
